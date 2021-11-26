@@ -13,6 +13,8 @@ import java.util.List;
 @Repository
 public interface UserRepository extends JpaRepository<User, Integer> {
     Page<User> findUserByAge(Pageable pageable, int age);
-    @Query(value = "SELECT * FROM users u WHERE u.name = :name ", nativeQuery = true)
+    @Query(value = "SELECT * FROM users u WHERE u.name = :name  or u.name LIKE '%:name%'", nativeQuery = true)
     List<User> findUserByName(String name);
+
+
 }

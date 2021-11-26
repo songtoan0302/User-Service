@@ -18,7 +18,7 @@ import java.util.Map;
 
 @RestController
 @RequiredArgsConstructor
-@RequestMapping("/v1/api/users")
+@RequestMapping("/api/v1/users")
 public class UserController {
     private final UserService userService;
 
@@ -56,13 +56,13 @@ public class UserController {
         return new ResponseEntity<>(userDTO,HttpStatus.OK);
     }
 
-    @GetMapping("/name/age")
-    public ResponseEntity<List<UserDTO>> searchUserByName(@RequestBody String name,@RequestBody int age){
+    @GetMapping("/name/{age}")
+    public ResponseEntity<List<UserDTO>> searchUserByName(@RequestBody String name,@PathVariable int age){
         List<UserDTO> userDTOS=userService.searchUserByName(name,age);
         return new ResponseEntity<>(userDTOS,HttpStatus.OK);
     }
 
-    @GetMapping("/name/address")
+    @GetMapping("/names/address")
     public ResponseEntity<List<UserDTO>> searchUserByName(@RequestBody String name,@RequestBody String address){
         List<UserDTO> userDTOS=userService.searchUserByName(name,address);
         return new ResponseEntity<>(userDTOS,HttpStatus.OK);

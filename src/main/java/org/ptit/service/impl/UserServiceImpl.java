@@ -102,13 +102,14 @@ public class UserServiceImpl implements UserService {
     }
 
     @Override
-    public List<UserDTO> searchUserByName(String name, int age) {
+    public List<UserDTO> searchUserByName(String name,int age) {
         List<User> users=userRepository.findUserByName(name);
         List<UserDTO> userDTOS= new ArrayList<>();
         for (User user:users){
             if(user.getAge()==age){
                 userDTOS.add(userMapper.convertToDTO(user));
             }
+//            userDTOS.add(userMapper.convertToDTO(user));
         }
         return userDTOS;
     }
@@ -126,5 +127,15 @@ public class UserServiceImpl implements UserService {
 
     }
 
+//    @Override
+//    public List<UserDTO> searchUserByName(String name, String address) {
+//        List<User> users=userRepository.findUserByName(name);
+//        List<UserDTO> userDTOS= new ArrayList<>();
+//        Page<User> userPage=userRepository.filterByAge(address);
+//        Page<UserDTO> userDTOPage=userMapper.mapPage(userPage,UserDTO.class);
+//        userDTOS.addAll(userDTOPage.getContent());
+//        return userDTOS;
+//
+//    }
 
 }
