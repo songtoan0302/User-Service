@@ -29,12 +29,15 @@ public class UserController {
     }
 
     @GetMapping
-    public ResponseEntity<Map<String, Object>> getUsersPage(@RequestParam(defaultValue = "0") int page, @RequestParam(defaultValue = "1") int size) {
+    public ResponseEntity<Map<String, Object>> getUsersPage(@RequestParam(defaultValue = "0") int page,
+                                                            @RequestParam(defaultValue = "1") int size) {
         Map<String, Object> response = userService.getUsers(page, size);
         return new ResponseEntity<>(response, HttpStatus.OK);
     }
     @GetMapping("/age")
-    public ResponseEntity<Map<String, Object>> getUsersPageFilterAge(@RequestParam(defaultValue = "0") int page, @RequestParam(defaultValue = "1") int size,@RequestParam(defaultValue = "0") int age) {
+    public ResponseEntity<Map<String, Object>> getUsersPageFilterAge(@RequestParam(defaultValue = "0") int page,
+                                                                     @RequestParam(defaultValue = "1") int size,
+                                                                     @RequestParam(defaultValue = "0") int age) {
         Map<String, Object> response = userService.findUserByAge(page, size,age);
         return new ResponseEntity<>(response, HttpStatus.OK);
     }
@@ -45,29 +48,26 @@ public class UserController {
         return new ResponseEntity<>(userDTOCreated,HttpStatus.CREATED);
     }
      @PutMapping("/{id}")
-    public ResponseEntity<UserDTO> updateUser(@RequestBody UserDTO userDTO,@PathVariable int id){
+    public ResponseEntity<UserDTO> updateUser(@RequestBody UserDTO userDTO,
+                                              @PathVariable int id){
         UserDTO userDTOUpdated=userService.updateUser(userDTO,id);
         return new ResponseEntity<>(userDTOUpdated,HttpStatus.OK);
      }
 
      @PatchMapping("/{id}")
-    public ResponseEntity<UserDTO> updateIdNumber(@PathVariable int id, @RequestBody String idNumber){
+    public ResponseEntity<UserDTO> updateIdNumber(@PathVariable int id,
+                                                  @RequestBody String idNumber){
         UserDTO userDTO =userService.updateUserByIdNumber(idNumber,id);
         return new ResponseEntity<>(userDTO,HttpStatus.OK);
     }
 
-    @GetMapping("/name/{age}")
-    public ResponseEntity<List<UserDTO>> searchUserByName(@RequestBody String name,@PathVariable int age){
-        List<UserDTO> userDTOS=userService.searchUserByName(name,age);
+    @GetMapping("/search")
+    public ResponseEntity<List<UserDTO>> searchUserByName(@RequestParam(defaultValue = "") String name,
+                                                          @RequestParam(defaultValue = "") String address,
+                                                          @RequestParam(defaultValue = "") Integer age){
+        List<UserDTO> userDTOS=userService.searchUserByName(name,address, age);
         return new ResponseEntity<>(userDTOS,HttpStatus.OK);
     }
-
-    @GetMapping("/names/address")
-    public ResponseEntity<List<UserDTO>> searchUserByName(@RequestBody String name,@RequestBody String address){
-        List<UserDTO> userDTOS=userService.searchUserByName(name,address);
-        return new ResponseEntity<>(userDTOS,HttpStatus.OK);
-    }
-
     @DeleteMapping("/{id}")
     public ResponseEntity<String>  deleteUser(@PathVariable("id") int id){
         userService.deleteUserById(id);

@@ -1,5 +1,7 @@
 package org.ptit.service;
 
+import liquibase.pro.packaged.I;
+import liquibase.pro.packaged.S;
 import org.ptit.dto.UserDTO;
 
 import java.util.List;
@@ -14,7 +16,6 @@ public interface UserService {
     void deleteUsers();
     Map<String,Object> getUsers(int page, int size);
     Map<String , Object> findUserByAge(int age,int page,int size);
-   List<UserDTO> searchUserByName( String name,int age);
-    List<UserDTO> searchUserByName(String name,String address);
+    List<UserDTO> searchUserByName(String name, String address, Integer age);
 
 }

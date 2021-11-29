@@ -1,5 +1,7 @@
 package org.ptit.service.impl;
 
+import liquibase.pro.packaged.D;
+import liquibase.pro.packaged.I;
 import lombok.RequiredArgsConstructor;
 import org.ptit.dto.UserDTO;
 import org.ptit.exception.UserNotFoundException;
@@ -11,9 +13,14 @@ import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.data.domain.Page;
 import org.springframework.data.domain.PageRequest;
 import org.springframework.data.domain.Pageable;
+import org.springframework.data.jpa.domain.Specification;
 import org.springframework.stereotype.Service;
 
+import javax.persistence.criteria.CriteriaBuilder;
+import javax.persistence.criteria.CriteriaQuery;
+import javax.persistence.criteria.Root;
 import java.util.*;
+import java.util.function.Predicate;
 
 @Service
 @RequiredArgsConstructor
@@ -25,6 +32,7 @@ public class UserServiceImpl implements UserService {
     @Override
     public UserDTO getUser(int id) {
         User user = userRepository.getById(id);
+        if(!Objects.nonNull(user)) throw  new UserNotFoundException();
         UserDTO userDTO = userMapper.convertToDTO(user);
         return userDTO;
     }
@@ -32,6 +40,7 @@ public class UserServiceImpl implements UserService {
     @Override
     public UserDTO addUser(UserDTO userDTO) {
         User user = userMapper.convertToEntity(userDTO);
+        if(!Objects.nonNull(user)) throw  new UserNotFoundException();
         userRepository.save(user);
         return userMapper.convertToDTO(user);
     }
@@ -102,40 +111,26 @@ public class UserServiceImpl implements UserService {
     }
 
     @Override
-    public List<UserDTO> searchUserByName(String name,int age) {
-        List<User> users=userRepository.findUserByName(name);
-        List<UserDTO> userDTOS= new ArrayList<>();
-        for (User user:users){
-            if(user.getAge()==age){
-                userDTOS.add(userMapper.convertToDTO(user));
-            }
-//            userDTOS.add(userMapper.convertToDTO(user));
-        }
-        return userDTOS;
-    }
-
-    @Override
-    public List<UserDTO> searchUserByName(String name, String address) {
-        List<User> users=userRepository.findUserByName(name);
-        List<UserDTO> userDTOS= new ArrayList<>();
-        for (User user:users){
-            if(user.getAddress()==address){
-                userDTOS.add(userMapper.convertToDTO(user));
-            }
-        }
-        return userDTOS;
+    public List<UserDTO> searchUserByName(String name, String address, Integer age) {
+            List<User> users = userRepository.findAll(Specification.where(nameLike(name).and(filterUser(address, age))));
+            List<UserDTO> userDTOS = userMapper.mapList(users, UserDTO.class);
+            return userDTOS;
 
     }
 
-//    @Override
-//    public List<UserDTO> searchUserByName(String name, String address) {
-//        List<User> users=userRepository.findUserByName(name);
-//        List<UserDTO> userDTOS= new ArrayList<>();
-//        Page<User> userPage=userRepository.filterByAge(address);
-//        Page<UserDTO> userDTOPage=userMapper.mapPage(userPage,UserDTO.class);
-//        userDTOS.addAll(userDTOPage.getContent());
-//        return userDTOS;
-//
-//    }
+    private Specification<User> nameLike(String name){
+        return (userRoot, query, criteriaBuilder)
+                -> criteriaBuilder.like(userRoot.get("name"), "%"+name+"%");
+    }
+
+    private Specification<User> filterUser(String address, Integer age){
+        if(!address.isEmpty()){
+            return (userRoot,query,criteriaBuilder)->criteriaBuilder.like(userRoot.get("address"),address);
+        }
+        if(!(age==null)){
+            return (userRoot,query,criteriaBuilder)->criteriaBuilder.equal(userRoot.get("age"),age);
+        }
+        return null;
+    }
 
 }
