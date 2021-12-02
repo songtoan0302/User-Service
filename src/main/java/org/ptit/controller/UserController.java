@@ -1,13 +1,11 @@
 package org.ptit.controller;
 
-import liquibase.pro.packaged.H;
-import liquibase.pro.packaged.N;
-import liquibase.pro.packaged.O;
-import liquibase.pro.packaged.P;
+import liquibase.pro.packaged.*;
 import lombok.RequiredArgsConstructor;
 import org.ptit.dto.UserDTO;
 import org.ptit.model.User;
 import org.ptit.service.UserService;
+import org.springframework.data.domain.Page;
 import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
 import org.springframework.web.bind.annotation.*;
@@ -29,17 +27,17 @@ public class UserController {
     }
 
     @GetMapping
-    public ResponseEntity<Map<String, Object>> getUsersPage(@RequestParam(defaultValue = "0") int page,
+    public ResponseEntity<Page<UserDTO>> listUsers(@RequestParam(defaultValue = "0") int page,
                                                             @RequestParam(defaultValue = "1") int size) {
-        Map<String, Object> response = userService.getUsers(page, size);
-        return new ResponseEntity<>(response, HttpStatus.OK);
+       Page<UserDTO> listUserPage = userService.getUserPage(page, size);
+        return new ResponseEntity<>(listUserPage, HttpStatus.OK);
     }
     @GetMapping("/age")
-    public ResponseEntity<Map<String, Object>> getUsersPageFilterAge(@RequestParam(defaultValue = "0") int page,
-                                                                     @RequestParam(defaultValue = "1") int size,
-                                                                     @RequestParam(defaultValue = "0") int age) {
-        Map<String, Object> response = userService.findUserByAge(page, size,age);
-        return new ResponseEntity<>(response, HttpStatus.OK);
+    public ResponseEntity<Page<UserDTO>> findByAge(@RequestParam(defaultValue = "1") int page,
+                                             @RequestParam(defaultValue = "1") int size,
+                                             @RequestParam(defaultValue = "0") int age) {
+        Page<UserDTO> listUserPage = userService.findByAge(age,page, size);
+        return new ResponseEntity<>(listUserPage, HttpStatus.OK);
     }
 
     @PostMapping
@@ -49,23 +47,23 @@ public class UserController {
     }
      @PutMapping("/{id}")
     public ResponseEntity<UserDTO> updateUser(@RequestBody UserDTO userDTO,
-                                              @PathVariable int id){
+                                              @PathVariable("id") int id){
         UserDTO userDTOUpdated=userService.updateUser(userDTO,id);
         return new ResponseEntity<>(userDTOUpdated,HttpStatus.OK);
      }
 
      @PatchMapping("/{id}")
-    public ResponseEntity<UserDTO> updateIdNumber(@PathVariable int id,
+    public ResponseEntity<UserDTO> updateIdNumber(@PathVariable("id") int id,
                                                   @RequestBody String idNumber){
-        UserDTO userDTO =userService.updateUserByIdNumber(idNumber,id);
+        UserDTO userDTO =userService.updateByIdNumber(idNumber,id);
         return new ResponseEntity<>(userDTO,HttpStatus.OK);
     }
 
     @GetMapping("/search")
-    public ResponseEntity<List<UserDTO>> searchUserByName(@RequestParam(defaultValue = "") String name,
+    public ResponseEntity<List<UserDTO>> findByNameFilterAddressAndAge(String name,
                                                           @RequestParam(defaultValue = "") String address,
                                                           @RequestParam(defaultValue = "") Integer age){
-        List<UserDTO> userDTOS=userService.searchUserByName(name,address, age);
+        List<UserDTO> userDTOS=userService.findByName(name,address, age);
         return new ResponseEntity<>(userDTOS,HttpStatus.OK);
     }
     @DeleteMapping("/{id}")

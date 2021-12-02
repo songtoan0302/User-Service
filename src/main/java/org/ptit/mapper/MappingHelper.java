@@ -14,18 +14,8 @@ import java.util.stream.Collectors;
 
 @Component
 @RequiredArgsConstructor
-public class UserMapper {
+public class MappingHelper {
     private final ModelMapper modelMapper;
-
-    public User convertToEntity(UserDTO userDTO) {
-        User user = modelMapper.map(userDTO, User.class);
-        return user;
-    }
-
-    public UserDTO convertToDTO(User user) {
-        UserDTO userDTO = modelMapper.map(user, UserDTO.class);
-        return userDTO;
-    }
 
     public <T, H> Page<T> mapPage(Page<H> inputData, Class<T> clazz) {
         return inputData.map(i -> modelMapper.map(i, clazz));
