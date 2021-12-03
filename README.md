@@ -19,7 +19,7 @@
         + API nhận id trả về user theo id và HTTP status code 200 nếu thành công
         + Test URL bằng Postman với id=20 ta có:
           ![img_26.png](img_26.png)
-   - getUsersPage:
+   - listUsers:
         + URL: localhost://8081/api/v1/users
         + API nhận tham số page và size dưới dạng Param và trả về 1 map chứa số lượng user, list user, số trang, số lượng trang theo yêu cầu kèm theo đó là HTTP status code 200 nếu thành công.
         + Nếu không truyền tham số thì tham số sẽ ở dạng mặc định page=0 và size=1
@@ -27,24 +27,24 @@
         ![img_27.png](img_27.png)
         + Test API bằng Postman với tham số tùy ý: Ở đây tôi truyền page=1 and size=10
         ![img_28.png](img_28.png)
-   - getUsersPageFilterAge:
-        + URL: localhost://8081/api/v1/users/age
+   - findByAge:
+        + URL: localhost://8081/api/v1/users/search/age
         + API nhận tham số là page,size và age dưới dạng Param và trả về 1 map chứa số lượng user, list user, số trang, số lượng trang theo yêu cầu kèm theo đó là HTTP status code 200 nếu thành công.Nếu age khác null thì list user được trả về sẽ là list user đã được lọc theo độ tuổi
-        + Mặc định age=0,page=0,size=1
-        + Test API bằng Postman với tham số mặc định:
-        ![img_31.png](img_31.png)
-        + Test API bằng Postman với tham số page=0, size=5,age=20:
-        ![img_32.png](img_32.png)
-   - searchUserByName:
-      + URL: localhost://8081/api/v1/users/search
+        + Mặc định page=0,size=1
+        + Test API bằng Postman với tham số page=0, size=5,age=19:
+        ![img_5.png](img_5.png)
+        ![img_6.png](img_6.png)
+        ![img_7.png](img_7.png)
+   -  findByNameFilterAddressAndAge:
+      + URL: localhost://8081/api/v1/users/search/name
       + API nhận tham số là name, address, age dưới dạng Param và trả về 1 list user theo yêu cầu cùng HTTP status code 200 sau khi thực hiện thành công
-      + Mặc định tất cả các tham số đều là null
-      + Test API bằng Postman với tham số mặc định:
-      ![img_34.png](img_34.png)
-      + Test API bằng Postman với name=to, address=Thanh Hoa
-      ![img_35.png](img_35.png)
+      + Mặc định tất cả các tham số đều là null trừ name
+      + Test API bằng Postman với name=t, address=Thanh Hoa
+     ![img_1.png](img_1.png)
       + Test API bằng Postman với name=to, age=20
-      ![img_36.png](img_36.png)
+      ![img_2.png](img_2.png)
+      + Test API bằng Postman với name=t, age=20, address= Ha noi
+      +  ![img.png](img.png)
 2. POST:
     - createUser:
         + URL: localhost://8081/api/v1/users
