@@ -5,6 +5,7 @@ import liquibase.pro.packaged.S;
 import liquibase.pro.packaged.T;
 import org.ptit.dto.UserDTO;
 import org.springframework.data.domain.Page;
+import org.springframework.data.domain.Pageable;
 
 import java.util.List;
 import java.util.Map;
@@ -22,10 +23,9 @@ public interface UserService {
 
     void deleteUsers();
 
-    //    Page<UserDTO> getUserPage(int page, int size);
-    Page<UserDTO> getUserPage(int page, int size);
+    Page<UserDTO> getUsers(Pageable pageable);
 
-    Page<UserDTO> findByAge( int page, int size,int age);
+    Page<UserDTO> findByAge(Pageable pageable, int age);
 
     List<UserDTO> findByName(String name, String address, Integer age);
 

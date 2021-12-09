@@ -9,7 +9,6 @@ import org.ptit.model.User;
 import org.ptit.repository.UserRepository;
 import org.ptit.service.UserService;
 import org.springframework.data.domain.Page;
-import org.springframework.data.domain.PageRequest;
 import org.springframework.data.domain.Pageable;
 import org.springframework.data.jpa.domain.Specification;
 import org.springframework.stereotype.Service;
@@ -27,15 +26,15 @@ public class UserServiceImpl implements UserService {
     public UserDTO getUser(int id) {
         User user = userRepository.getById(id);
         if (!Objects.nonNull(user)) throw new UserNotFoundException();
-        UserDTO userDTO = modelMapper.map(user,UserDTO.class);
+        UserDTO userDTO = modelMapper.map(user, UserDTO.class);
         return userDTO;
     }
 
     @Override
     public UserDTO addUser(UserDTO userDTO) {
-        User user = modelMapper.map(userDTO,User.class);
+        User user = modelMapper.map(userDTO, User.class);
         userRepository.save(user);
-        return modelMapper.map(user,UserDTO.class);
+        return modelMapper.map(user, UserDTO.class);
     }
 
     @Override
@@ -48,7 +47,7 @@ public class UserServiceImpl implements UserService {
             user.setAge(user.getAge());
             user.setIdNumber(user.getIdNumber());
             userRepository.save(user);
-            UserDTO userUpdated = modelMapper.map(user,UserDTO.class);
+            UserDTO userUpdated = modelMapper.map(user, UserDTO.class);
             return userUpdated;
         }
     }
@@ -60,7 +59,7 @@ public class UserServiceImpl implements UserService {
         else {
             user.setIdNumber(idNumber);
             userRepository.save(user);
-            UserDTO userDTO = modelMapper.map(user,UserDTO.class);
+            UserDTO userDTO = modelMapper.map(user, UserDTO.class);
             return userDTO;
         }
 
@@ -77,16 +76,14 @@ public class UserServiceImpl implements UserService {
     }
 
     @Override
-    public Page<UserDTO> getUserPage(int page, int size) {
-        Pageable pageable = PageRequest.of(page, size);
+    public Page<UserDTO> getUsers(Pageable pageable) {
         Page<User> userPage = userRepository.findAll(pageable);
         Page<UserDTO> userDTOPage = mappingHelper.mapPage(userPage, UserDTO.class);
         return userDTOPage;
     }
 
     @Override
-    public Page<UserDTO> findByAge(int page, int size, int age) {
-        Pageable pageable = PageRequest.of(page, size);
+    public Page<UserDTO> findByAge(Pageable pageable, int age) {
         Page<User> userPage = userRepository.findUserByAge(pageable, age);
         Page<UserDTO> userDTOPage = mappingHelper.mapPage(userPage, UserDTO.class);
         return userDTOPage;
@@ -111,6 +108,8 @@ public class UserServiceImpl implements UserService {
         } else {
             return null;
         }
+//        Specification<User> userSpecification=(userRoot, query, criteriaBuilder) -> criteriaBuilder.equal(userRoot.get("age"), age);
+//        return (age==null)?(userSpecification):null;
     }
 
     private Specification<User> filterByAddress(String address) {
@@ -120,4 +119,7 @@ public class UserServiceImpl implements UserService {
             return null;
         }
     }
+//        Specification<User> userSpecification=(userRoot, query, criteriaBuilder) -> criteriaBuilder.equal(userRoot.get("age"), address);
+//        return (address.isEmpty())?userSpecification:null;
+//    }
 }
