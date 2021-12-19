@@ -23,4 +23,8 @@ public class PagingReq {//PagingRequest
     public Pageable makePageable() {
         return PageRequest.of(getPageNum() - 1, getPageSize());
     }
+    @JsonIgnore
+    public Pageable nextPage(int page){
+        return  PageRequest.of(getPageNum()+page-2,getPageSize());
+    }
 }

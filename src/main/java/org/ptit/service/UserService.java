@@ -9,6 +9,7 @@ import org.springframework.data.domain.Pageable;
 
 import java.util.List;
 import java.util.Map;
+import java.util.Optional;
 
 public interface UserService {
     UserDTO getUser(int id);
@@ -25,7 +26,7 @@ public interface UserService {
 
     Page<UserDTO> getUsers(Pageable pageable);
 
-    Page<UserDTO> findByAge(Pageable pageable, int age);
+    Page<UserDTO> listUsersByAge(Pageable pageable, int age);
 
     List<UserDTO> findByName(String name, String address, Integer age);
 

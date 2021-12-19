@@ -6,9 +6,9 @@ import org.ptit.paging.PagingReq;
 import org.ptit.paging.PagingRes;
 import org.ptit.service.UserService;
 import org.springframework.data.domain.Page;
-import org.springframework.data.domain.Pageable;
 import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
+import org.springframework.validation.annotation.Validated;
 import org.springframework.web.bind.annotation.*;
 
 import java.util.List;
@@ -26,20 +26,22 @@ public class UserController {
     }
 
     @GetMapping
-    public ResponseEntity<PagingRes<UserDTO>> listUsers(PagingReq pagingReq, @RequestParam(defaultValue = "1") int page, @RequestParam(defaultValue = "10") int size) {
-        pagingReq.setPageSize(size);
-        pagingReq.setPageNum(page);
+    public ResponseEntity<PagingRes<UserDTO>> listUsers(@Validated final PagingReq pagingReq,
+                                                        @RequestParam(defaultValue = "0") int page) {
         Page<UserDTO> listUserPage = userService.getUsers(pagingReq.makePageable());
+        if(page>1){
+            Page<UserDTO> nextPage = userService.getUsers(pagingReq.nextPage(page));
+            return new ResponseEntity<>(PagingRes.of(nextPage), HttpStatus.OK);
+        }
         return new ResponseEntity<>(PagingRes.of(listUserPage), HttpStatus.OK);
     }
 
     @GetMapping("/search/age")
-    public ResponseEntity<PagingRes<UserDTO>> findByAge(PagingReq pagingReq,
-                                                        @RequestParam int age, @RequestParam(defaultValue = "1") int page,
-                                                        @RequestParam(defaultValue = "10") int size) {
-        pagingReq.setPageSize(size);
-        pagingReq.setPageNum(page);
-        Page<UserDTO> listUserPage = userService.findByAge(pagingReq.makePageable(), age);
+    public ResponseEntity<PagingRes<UserDTO>> listUsersByAge(@Validated PagingReq pagingReq,
+                                                        @RequestParam(defaultValue = "1") int age,
+                                                        @RequestParam(defaultValue = "10") int page) {
+
+        Page<UserDTO> listUserPage = userService.listUsersByAge(pagingReq.makePageable(), age);
         return new ResponseEntity<>(PagingRes.of(listUserPage), HttpStatus.OK);
     }
 

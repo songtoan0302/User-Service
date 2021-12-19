@@ -2,8 +2,6 @@ package org.ptit.mapper;
 
 import lombok.RequiredArgsConstructor;
 import org.modelmapper.ModelMapper;
-import org.ptit.dto.UserDTO;
-import org.ptit.model.User;
 import org.springframework.data.domain.Page;
 import org.springframework.stereotype.Component;
 import org.springframework.util.CollectionUtils;
@@ -17,6 +15,8 @@ import java.util.stream.Collectors;
 public class MappingHelper {
     private final ModelMapper modelMapper;
 
+
+
     public <T, H> Page<T> mapPage(Page<H> inputData, Class<T> clazz) {
         return inputData.map(i -> modelMapper.map(i, clazz));
     }
@@ -27,6 +27,10 @@ public class MappingHelper {
                 inputData.stream()
                         .map(i -> modelMapper.map(i, clazz))
                         .collect(Collectors.toList());
+    }
+
+    public <T,H> T map(H source,Class<T> destination){
+        return modelMapper.map(source,destination);
     }
 
 }

@@ -1,7 +1,7 @@
 package org.ptit.service.impl;
 
+
 import lombok.RequiredArgsConstructor;
-import org.modelmapper.ModelMapper;
 import org.ptit.dto.UserDTO;
 import org.ptit.exception.UserNotFoundException;
 import org.ptit.mapper.MappingHelper;
@@ -15,26 +15,29 @@ import org.springframework.stereotype.Service;
 
 import java.util.*;
 
+import static org.springframework.data.jpa.domain.Specification.where;
+
 @Service
 @RequiredArgsConstructor
 public class UserServiceImpl implements UserService {
     private final UserRepository userRepository;
     private final MappingHelper mappingHelper;
-    private final ModelMapper modelMapper;
 
     @Override
     public UserDTO getUser(int id) {
-        User user = userRepository.getById(id);
-        if (!Objects.nonNull(user)) throw new UserNotFoundException();
-        UserDTO userDTO = modelMapper.map(user, UserDTO.class);
+        Optional<User> userOptional = Optional.of(userRepository.getById(id));
+        userOptional.orElseThrow(()-> {
+            throw new UserNotFoundException();
+        });
+        UserDTO userDTO=mappingHelper.map(userOptional.get(),UserDTO.class);
         return userDTO;
     }
 
     @Override
     public UserDTO addUser(UserDTO userDTO) {
-        User user = modelMapper.map(userDTO, User.class);
+        User user = mappingHelper.map(userDTO, User.class);
         userRepository.save(user);
-        return modelMapper.map(user, UserDTO.class);
+        return mappingHelper.map(user, UserDTO.class);
     }
 
     @Override
@@ -46,9 +49,9 @@ public class UserServiceImpl implements UserService {
             user.setAddress(userDTO.getAddress());
             user.setAge(user.getAge());
             user.setIdNumber(user.getIdNumber());
-            userRepository.save(user);
-            UserDTO userUpdated = modelMapper.map(user, UserDTO.class);
-            return userUpdated;
+            User userUpdated = userRepository.save(user);
+            UserDTO userDTOUpdated = mappingHelper.map(userUpdated, UserDTO.class);
+            return userDTOUpdated;
         }
     }
 
@@ -59,7 +62,7 @@ public class UserServiceImpl implements UserService {
         else {
             user.setIdNumber(idNumber);
             userRepository.save(user);
-            UserDTO userDTO = modelMapper.map(user, UserDTO.class);
+            UserDTO userDTO = mappingHelper.map(user, UserDTO.class);
             return userDTO;
         }
 
@@ -83,7 +86,7 @@ public class UserServiceImpl implements UserService {
     }
 
     @Override
-    public Page<UserDTO> findByAge(Pageable pageable, int age) {
+    public Page<UserDTO> listUsersByAge(Pageable pageable, int age) {
         Page<User> userPage = userRepository.findUserByAge(pageable, age);
         Page<UserDTO> userDTOPage = mappingHelper.mapPage(userPage, UserDTO.class);
         return userDTOPage;
@@ -91,7 +94,7 @@ public class UserServiceImpl implements UserService {
 
     @Override
     public List<UserDTO> findByName(String name, String address, Integer age) {
-        List<User> users = userRepository.findAll(Specification.where(nameLike(name).and(filterByAge(age)).and(filterByAddress(address))));
+        List<User> users = userRepository.findAll(where(nameLike(name).and(filterByAge(age)).and(filterByAddress(address))));
         List<UserDTO> userDTOS = mappingHelper.mapList(users, UserDTO.class);
         return userDTOS;
 
