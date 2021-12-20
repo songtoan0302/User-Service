@@ -20,16 +20,17 @@ public class UserController {
     private final UserService userService;
 
     @GetMapping("/{id}")
+    @ResponseBody
     public ResponseEntity<UserDTO> getUser(@PathVariable("id") int id) {
         UserDTO userDTO = userService.getUser(id);
         return new ResponseEntity<>(userDTO, HttpStatus.OK);
     }
 
     @GetMapping
-    public ResponseEntity<PagingRes<UserDTO>> listUsers(@Validated final PagingReq pagingReq,
+    public ResponseEntity<PagingRes<UserDTO>> listUsers(@Validated PagingReq pagingReq,
                                                         @RequestParam(defaultValue = "0") int page) {
         Page<UserDTO> listUserPage = userService.getUsers(pagingReq.makePageable());
-        if(page>1){
+        if (page > 1) {
             Page<UserDTO> nextPage = userService.getUsers(pagingReq.nextPage(page));
             return new ResponseEntity<>(PagingRes.of(nextPage), HttpStatus.OK);
         }
@@ -38,21 +39,24 @@ public class UserController {
 
     @GetMapping("/search/age")
     public ResponseEntity<PagingRes<UserDTO>> listUsersByAge(@Validated PagingReq pagingReq,
-                                                        @RequestParam(defaultValue = "1") int age,
-                                                        @RequestParam(defaultValue = "10") int page) {
-
+                                                             @RequestParam int age,
+                                                             @RequestParam(defaultValue = "0") int page) {
+        if (page > 1) {
+            Page<UserDTO> nextPage = userService.getUsers(pagingReq.nextPage(page));
+            return new ResponseEntity<>(PagingRes.of(nextPage), HttpStatus.OK);
+        }
         Page<UserDTO> listUserPage = userService.listUsersByAge(pagingReq.makePageable(), age);
         return new ResponseEntity<>(PagingRes.of(listUserPage), HttpStatus.OK);
     }
 
     @PostMapping
-    public ResponseEntity<UserDTO> createUser(@RequestBody UserDTO userDTO) {
+    public ResponseEntity<UserDTO> createUser(@Validated @RequestBody UserDTO userDTO) {
         UserDTO userDTOCreated = userService.addUser(userDTO);
         return new ResponseEntity<>(userDTOCreated, HttpStatus.CREATED);
     }
 
     @PutMapping("/{id}")
-    public ResponseEntity<UserDTO> updateUser(@RequestBody UserDTO userDTO,
+    public ResponseEntity<UserDTO> updateUser(@Validated @RequestBody UserDTO userDTO,
                                               @PathVariable("id") int id) {
         UserDTO userDTOUpdated = userService.updateUser(userDTO, id);
         return new ResponseEntity<>(userDTOUpdated, HttpStatus.OK);
