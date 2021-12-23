@@ -22,7 +22,7 @@ public class UserControllerAdvice  {
         return new ResponseEntity(error, HttpStatus.NOT_FOUND);
     }
     @ExceptionHandler(ConstraintViolationException.class)
-    public ResponseEntity<Object> handleMethodArgumentNotValid(ConstraintViolationException ex, HttpHeaders headers, HttpStatus status) {
+    public ResponseEntity<Object> handleMethodArgumentNotValid(ConstraintViolationException ex) {
         ServiceError error=new ServiceError("Validation Failed");
         return new ResponseEntity(error, HttpStatus.BAD_REQUEST);
     }
