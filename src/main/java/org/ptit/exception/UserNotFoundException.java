@@ -1,5 +1,11 @@
 package org.ptit.exception;
 
-public class UserNotFoundException extends RuntimeException {
-    private static final long serialVersionUID =1l;
+//import liquibase.pro.packaged.B;
+//import org.ptit.exception.common.BusinessException;
+//import org.ptit.exception.common.ServiceError;
+
+public class UserNotFoundException  extends RuntimeException{
+    public UserNotFoundException(String message){
+        super(message);
+    }
 }

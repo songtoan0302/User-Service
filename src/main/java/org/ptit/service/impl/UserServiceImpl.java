@@ -25,11 +25,10 @@ public class UserServiceImpl implements UserService {
 
     @Override
     public UserDTO getUser(int id) {
-        Optional<User> userOptional = Optional.of(userRepository.getById(id));
-        userOptional.orElseThrow(()-> {
+        User user = userRepository.findById(id).orElseThrow(() -> {
             throw new UserNotFoundException();
         });
-        UserDTO userDTO=mappingHelper.map(userOptional.get(),UserDTO.class);
+        UserDTO userDTO = mappingHelper.map(user, UserDTO.class);
         return userDTO;
     }
 
@@ -42,30 +41,27 @@ public class UserServiceImpl implements UserService {
 
     @Override
     public UserDTO updateUser(UserDTO userDTO, int id) {
-        User user = userRepository.getById(id);
-        if (!Objects.nonNull(user)) throw new UserNotFoundException();
-        else {
-            user.setName(userDTO.getName());
-            user.setAddress(userDTO.getAddress());
-            user.setAge(user.getAge());
-            user.setIdNumber(user.getIdNumber());
-            User userUpdated = userRepository.save(user);
-            UserDTO userDTOUpdated = mappingHelper.map(userUpdated, UserDTO.class);
-            return userDTOUpdated;
-        }
+        User user = userRepository.findById(id).orElseThrow(() -> {
+            throw new UserNotFoundException();
+        });
+        user.setName(userDTO.getName());
+        user.setAddress(userDTO.getAddress());
+        user.setAge(user.getAge());
+        user.setIdNumber(user.getIdNumber());
+        User userUpdated = userRepository.save(user);
+        UserDTO userDTOUpdated = mappingHelper.map(userUpdated, UserDTO.class);
+        return userDTOUpdated;
     }
 
     @Override
     public UserDTO updateByIdNumber(String idNumber, int id) {
-        User user = userRepository.getById(id);
-        if (!Objects.nonNull(user)) throw new UserNotFoundException();
-        else {
-            user.setIdNumber(idNumber);
-            userRepository.save(user);
-            UserDTO userDTO = mappingHelper.map(user, UserDTO.class);
-            return userDTO;
-        }
-
+        User user = userRepository.findById(id).orElseThrow(() -> {
+            throw new UserNotFoundException();
+        });
+        user.setIdNumber(idNumber);
+        userRepository.save(user);
+        UserDTO userDTO = mappingHelper.map(user, UserDTO.class);
+        return userDTO;
     }
 
     @Override
@@ -111,8 +107,6 @@ public class UserServiceImpl implements UserService {
         } else {
             return null;
         }
-//        Specification<User> userSpecification=(userRoot, query, criteriaBuilder) -> criteriaBuilder.equal(userRoot.get("age"), age);
-//        return (age==null)?(userSpecification):null;
     }
 
     private Specification<User> filterByAddress(String address) {
@@ -122,7 +116,4 @@ public class UserServiceImpl implements UserService {
             return null;
         }
     }
-//        Specification<User> userSpecification=(userRoot, query, criteriaBuilder) -> criteriaBuilder.equal(userRoot.get("age"), address);
-//        return (address.isEmpty())?userSpecification:null;
-//    }
 }

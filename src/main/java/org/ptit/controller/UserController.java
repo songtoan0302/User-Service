@@ -27,24 +27,15 @@ public class UserController {
     }
 
     @GetMapping
-    public ResponseEntity<PagingRes<UserDTO>> listUsers(@Validated PagingReq pagingReq,
-                                                        @RequestParam(defaultValue = "0") int page) {
+    public ResponseEntity<PagingRes<UserDTO>> listUsers(@Validated PagingReq pagingReq) {
         Page<UserDTO> listUserPage = userService.getUsers(pagingReq.makePageable());
-        if (page > 1) {
-            Page<UserDTO> nextPage = userService.getUsers(pagingReq.nextPage(page));
-            return new ResponseEntity<>(PagingRes.of(nextPage), HttpStatus.OK);
-        }
+
         return new ResponseEntity<>(PagingRes.of(listUserPage), HttpStatus.OK);
     }
 
     @GetMapping("/search/age")
     public ResponseEntity<PagingRes<UserDTO>> listUsersByAge(@Validated PagingReq pagingReq,
-                                                             @RequestParam int age,
-                                                             @RequestParam(defaultValue = "0") int page) {
-        if (page > 1) {
-            Page<UserDTO> nextPage = userService.getUsers(pagingReq.nextPage(page));
-            return new ResponseEntity<>(PagingRes.of(nextPage), HttpStatus.OK);
-        }
+                                                             @RequestParam int age) {
         Page<UserDTO> listUserPage = userService.listUsersByAge(pagingReq.makePageable(), age);
         return new ResponseEntity<>(PagingRes.of(listUserPage), HttpStatus.OK);
     }
