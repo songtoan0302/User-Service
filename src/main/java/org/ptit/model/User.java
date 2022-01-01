@@ -6,6 +6,7 @@ import lombok.NoArgsConstructor;
 import lombok.NonNull;
 
 import javax.persistence.*;
+import javax.validation.constraints.NotBlank;
 import java.io.Serializable;
 
 @Entity
@@ -24,6 +25,7 @@ public class User implements Serializable {
     @NonNull
     @Column(name = "id_number")
     private String idNumber;
+    @NotBlank
     @Column(name = "age")
     private int age;
     @NonNull

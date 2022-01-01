@@ -1,8 +1,9 @@
-package org.ptit.service.impl;
+package org.ptit.service.iml;
 
 
 import lombok.RequiredArgsConstructor;
 import org.ptit.dto.UserDTO;
+//import org.ptit.exception.UserNotFoundException;
 import org.ptit.exception.UserNotFoundException;
 import org.ptit.mapper.MappingHelper;
 import org.ptit.model.User;
@@ -19,7 +20,7 @@ import static org.springframework.data.jpa.domain.Specification.where;
 
 @Service
 @RequiredArgsConstructor
-public class UserServiceImpl implements UserService {
+public class UserServiceIml implements UserService {
     private final UserRepository userRepository;
     private final MappingHelper mappingHelper;
 

@@ -1,11 +1,10 @@
 package org.ptit.exception;
 
-//import liquibase.pro.packaged.B;
-//import org.ptit.exception.common.BusinessException;
-//import org.ptit.exception.common.ServiceError;
+import org.ptit.exception.common.BusinessException;
+import org.ptit.exception.common.ServiceError;
 
-public class UserNotFoundException  extends RuntimeException{
-    public UserNotFoundException(String message){
-        super(message);
+public class UserNotFoundException extends BusinessException {
+    public UserNotFoundException() {
+        super(ServiceError.USER_NOT_FOUND_EXCEPTION);
     }
 }

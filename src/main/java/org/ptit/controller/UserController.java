@@ -20,34 +20,32 @@ public class UserController {
     private final UserService userService;
 
     @GetMapping("/{id}")
-    @ResponseBody
     public ResponseEntity<UserDTO> getUser(@PathVariable("id") int id) {
         UserDTO userDTO = userService.getUser(id);
         return new ResponseEntity<>(userDTO, HttpStatus.OK);
     }
 
     @GetMapping
-    public ResponseEntity<PagingRes<UserDTO>> listUsers(@Validated PagingReq pagingReq) {
+    public ResponseEntity<PagingRes<UserDTO>> listUsers(@Validated() PagingReq pagingReq) {
         Page<UserDTO> listUserPage = userService.getUsers(pagingReq.makePageable());
-
         return new ResponseEntity<>(PagingRes.of(listUserPage), HttpStatus.OK);
     }
 
     @GetMapping("/search/age")
-    public ResponseEntity<PagingRes<UserDTO>> listUsersByAge(@Validated PagingReq pagingReq,
+    public ResponseEntity<PagingRes<UserDTO>> listUsersByAge(@Validated() PagingReq pagingReq,
                                                              @RequestParam int age) {
         Page<UserDTO> listUserPage = userService.listUsersByAge(pagingReq.makePageable(), age);
         return new ResponseEntity<>(PagingRes.of(listUserPage), HttpStatus.OK);
     }
 
     @PostMapping
-    public ResponseEntity<UserDTO> createUser(@Validated @RequestBody UserDTO userDTO) {
+    public ResponseEntity<UserDTO> createUser(@Validated() @RequestBody UserDTO userDTO) {
         UserDTO userDTOCreated = userService.addUser(userDTO);
         return new ResponseEntity<>(userDTOCreated, HttpStatus.CREATED);
     }
 
     @PutMapping("/{id}")
-    public ResponseEntity<UserDTO> updateUser(@Validated @RequestBody UserDTO userDTO,
+    public ResponseEntity<UserDTO> updateUser(@Validated() @RequestBody UserDTO userDTO,
                                               @PathVariable("id") int id) {
         UserDTO userDTOUpdated = userService.updateUser(userDTO, id);
         return new ResponseEntity<>(userDTOUpdated, HttpStatus.OK);

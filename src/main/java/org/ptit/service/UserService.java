@@ -1,15 +1,10 @@
 package org.ptit.service;
 
-import liquibase.pro.packaged.I;
-import liquibase.pro.packaged.S;
-import liquibase.pro.packaged.T;
 import org.ptit.dto.UserDTO;
 import org.springframework.data.domain.Page;
 import org.springframework.data.domain.Pageable;
 
 import java.util.List;
-import java.util.Map;
-import java.util.Optional;
 
 public interface UserService {
     UserDTO getUser(int id);
